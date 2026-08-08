@@ -1,112 +1,79 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Activity, BarChart3, CheckCircle2, CircleHelp, GitBranch, Layers3, RotateCcw } from 'lucide-react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useCallback, useMemo, useState, type ReactNode } from 'react';
+import {
+  Activity,
+  BarChart3,
+  CheckCircle2,
+  CircleHelp,
+  GitBranch,
+  RotateCcw,
+} from 'lucide-react';
 import { ErrorBoundary } from '@/components/error-boundary';
-import { Toaster } from '@/components/ui/toaster';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import { generateBubbleSortSteps } from '@/algorithms/bubble-sort';
-import type { VisualizationStep } from '@/algorithms/types';
 import { BarChart } from '@/components/BarChart';
 import { ControlPanel } from '@/components/ControlPanel';
 import { MetricCard } from '@/components/MetricCard';
+import { useVisualizationPlayback } from '@/hooks/use-visualization-playback';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 
-const queryClient = new QueryClient();
 const DEFAULT_SIZE = 28;
 
-type Status = 'ready' | 'running' | 'paused' | 'complete';
-
 function createArray(size: number): number[] {
-  return Array.from({ length: size }, (_, index) => {
+  const values = Array.from({ length: size }, (_, index) => {
     const wave = Math.sin(index * 1.73) * 25 + Math.cos(index * 0.46) * 18;
     return Math.max(8, Math.min(96, Math.round(52 + wave + ((index * 19) % 17) - 8)));
-  }).sort(() => Math.random() - 0.5);
+  });
+
+  for (let index = values.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [values[index], values[randomIndex]] = [
+      values[randomIndex],
+      values[index],
+    ];
+  }
+
+  return values;
+}
+
+function createRun(size: number) {
+  const initialValues = createArray(size);
+
+  return {
+    initialValues,
+    steps: generateBubbleSortSteps(initialValues),
+  };
 }
 
 function Home() {
   const [arraySize, setArraySize] = useState(DEFAULT_SIZE);
   const [speed, setSpeed] = useState(3);
-  const [values, setValues] = useState(() => createArray(DEFAULT_SIZE));
-  const [steps, setSteps] = useState<VisualizationStep[]>([]);
-  const [stepIndex, setStepIndex] = useState(0);
-  const [status, setStatus] = useState<Status>('ready');
-  const [comparisons, setComparisons] = useState(0);
-  const [swaps, setSwaps] = useState(0);
-  const [sorted, setSorted] = useState<Set<number>>(new Set());
-  const timerRef = useRef<number | null>(null);
+  const [run, setRun] = useState(() => createRun(DEFAULT_SIZE));
+  const playback = useVisualizationPlayback({
+    initialValues: run.initialValues,
+    steps: run.steps,
+    speed,
+  });
 
-  const currentStep = steps[stepIndex - 1];
-  const totalComparisons = useMemo(() => steps.filter((step) => step.type === 'compare').length, [steps]);
-  const progress = steps.length ? Math.min(100, Math.round((stepIndex / steps.length) * 100)) : 0;
+  const totalComparisons = useMemo(
+    () =>
+      run.steps.filter((step) => step.type === 'compare').length,
+    [run.steps],
+  );
+  const progress = run.steps.length
+    ? Math.min(
+        100,
+        Math.round(
+          (playback.stepIndex / run.steps.length) * 100,
+        ),
+      )
+    : 0;
 
-  const clearTimer = useCallback(() => {
-    if (timerRef.current !== null) {
-      window.clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-  }, []);
-
-  const reset = useCallback((size = arraySize) => {
-    clearTimer();
-    const next = createArray(size);
-    setValues(next);
-    setSteps(generateBubbleSortSteps(next));
-    setStepIndex(0);
-    setComparisons(0);
-    setSwaps(0);
-    setSorted(new Set());
-    setStatus('ready');
-  }, [arraySize, clearTimer]);
-
-  useEffect(() => {
-    reset(arraySize);
-  }, [arraySize, reset]);
-
-  useEffect(() => () => clearTimer(), [clearTimer]);
-
-  const advance = useCallback(() => {
-    setStepIndex((current) => {
-      if (current >= steps.length) return current;
-      const step = steps[current];
-      if (step.type === 'compare') setComparisons((value) => value + 1);
-      if (step.type === 'swap') {
-        setSwaps((value) => value + 1);
-        setValues((currentValues) => {
-          const next = [...currentValues];
-          if (step.indices) [next[step.indices[0]], next[step.indices[1]]] = [next[step.indices[1]], next[step.indices[0]]];
-          return next;
-        });
-      }
-      if (step.type === 'markSorted' && step.index !== undefined) setSorted((currentSorted) => new Set(currentSorted).add(step.index as number));
-      if (step.type === 'complete') {
-        setStatus('complete');
-        setSorted(new Set(values.map((_, index) => index)));
-      }
-      return current + 1;
-    });
-  }, [steps, values]);
-
-  useEffect(() => {
-    if (status !== 'running') return;
-    if (stepIndex >= steps.length) {
-      setStatus('complete');
-      return;
-    }
-    const delay = Math.round(560 / speed);
-    timerRef.current = window.setTimeout(advance, delay);
-    return clearTimer;
-  }, [advance, clearTimer, speed, status, stepIndex, steps.length]);
-
-  const start = () => {
-    if (status === 'complete') return;
-    setStatus('running');
-  };
-
-  const pause = () => {
-    clearTimer();
-    setStatus('paused');
-  };
+  const reset = useCallback(
+    (size = arraySize) => {
+      setRun(createRun(size));
+    },
+    [arraySize],
+  );
 
   return (
     <div className="grain min-h-[100dvh] bg-[hsl(var(--background))]">
@@ -140,25 +107,42 @@ function Home() {
 
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
           <div className="min-w-0 space-y-5">
-            <BarChart values={values} step={currentStep} sorted={sorted} status={status} />
+            <BarChart
+              values={playback.values}
+              step={playback.currentStep}
+              sorted={playback.sorted}
+              status={playback.status}
+            />
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <MetricCard label="Comparisons" value={comparisons.toString().padStart(2, '0')} detail={totalComparisons ? `${Math.round((comparisons / totalComparisons) * 100)}%` : '—'} testId="metric-comparisons" />
-              <MetricCard label="Swaps" value={swaps.toString().padStart(2, '0')} detail={swaps ? 'active' : 'none yet'} accent="amber" testId="metric-swaps" />
-              <MetricCard label="Pass" value={sorted.size ? `${Math.min(arraySize, sorted.size)}` : '—'} detail={`of ${arraySize}`} accent="navy" testId="metric-sorted" />
+              <MetricCard label="Comparisons" value={playback.comparisons.toString().padStart(2, '0')} detail={totalComparisons ? `${Math.round((playback.comparisons / totalComparisons) * 100)}%` : '—'} testId="metric-comparisons" />
+              <MetricCard label="Swaps" value={playback.swaps.toString().padStart(2, '0')} detail={playback.swaps ? 'active' : 'none yet'} accent="amber" testId="metric-swaps" />
+              <MetricCard label="Sorted positions" value={playback.sorted.size ? `${Math.min(arraySize, playback.sorted.size)}` : '—'} detail={`of ${arraySize}`} accent="navy" testId="metric-sorted" />
               <MetricCard label="Complexity" value="O(n²)" detail="worst case" accent="teal" testId="metric-complexity" />
             </div>
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[hsl(var(--card-border))] bg-[hsl(var(--card)/.6)] px-4 py-3 text-xs text-[hsl(var(--muted-foreground))]" data-testid="status-message">
               <div className="flex items-center gap-2">
-                {status === 'complete' ? <CheckCircle2 className="size-4 text-[hsl(var(--primary))]" /> : status === 'paused' ? <CircleHelp className="size-4 text-[hsl(var(--accent-foreground))]" /> : <GitBranch className="size-4 text-[hsl(var(--primary))]" />}
-                <span>{status === 'complete' ? 'Array sorted. The largest values have bubbled into place.' : status === 'paused' ? 'Playback is paused. Resume whenever you are ready.' : status === 'running' ? 'Comparing neighboring values…' : 'Ready to run a new pass through the array.'}</span>
+                {playback.status === 'complete' ? <CheckCircle2 className="size-4 text-[hsl(var(--primary))]" /> : playback.status === 'paused' ? <CircleHelp className="size-4 text-[hsl(var(--accent-foreground))]" /> : <GitBranch className="size-4 text-[hsl(var(--primary))]" />}
+                <span>{playback.status === 'complete' ? 'Array sorted. The largest values have bubbled into place.' : playback.status === 'paused' ? 'Playback is paused. Resume whenever you are ready.' : playback.status === 'running' ? 'Comparing neighboring values…' : 'Ready to run a new pass through the array.'}</span>
               </div>
-              <span className="font-mono text-[10px] uppercase tracking-[.14em]">{progress}% complete</span>
+              <span className="font-mono text-[10px] uppercase tracking-[.14em]">{progress}% playback</span>
             </div>
             <div className="h-1 overflow-hidden rounded-full bg-[hsl(var(--muted))]" data-testid="progress-bar">
               <div className="progress-sheen h-full rounded-full bg-[hsl(var(--primary))] transition-[width] duration-300" style={{ width: `${progress}%` }} />
             </div>
           </div>
-          <ControlPanel arraySize={arraySize} speed={speed} status={status} onArraySizeChange={setArraySize} onSpeedChange={setSpeed} onStart={start} onPause={pause} onReset={() => reset()} />
+          <ControlPanel
+            arraySize={arraySize}
+            speed={speed}
+            status={playback.status}
+            onArraySizeChange={(size) => {
+              setArraySize(size);
+              reset(size);
+            }}
+            onSpeedChange={setSpeed}
+            onStart={playback.start}
+            onPause={playback.pause}
+            onReset={() => reset()}
+          />
         </div>
 
         <section className="mt-12 grid gap-5 border-t border-[hsl(var(--border))] pt-8 sm:grid-cols-[1fr_auto] sm:items-start">
@@ -191,14 +175,11 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <RoutedErrorBoundary><Router /></RoutedErrorBoundary>
-        </WouterRouter>
-        <Toaster />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+      <RoutedErrorBoundary>
+        <Router />
+      </RoutedErrorBoundary>
+    </WouterRouter>
   );
 }
 

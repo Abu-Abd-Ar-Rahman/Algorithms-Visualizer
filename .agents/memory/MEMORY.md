@@ -1,0 +1,1 @@
+- [Algorithm visualization architecture](algorithm-visualization-architecture.md) — keep algorithm events, playback application, and rendering separate as new algorithm families are added.

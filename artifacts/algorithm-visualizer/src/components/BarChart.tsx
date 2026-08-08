@@ -1,11 +1,14 @@
 import { Check, GitCompareArrows, ArrowLeftRight } from 'lucide-react';
-import type { VisualizationStep } from '@/algorithms/types';
+import type {
+  PlaybackStatus,
+  VisualizationStep,
+} from '@/algorithms/types';
 
 interface BarChartProps {
   values: number[];
   step: VisualizationStep | undefined;
   sorted: Set<number>;
-  status: 'ready' | 'running' | 'paused' | 'complete';
+  status: PlaybackStatus;
 }
 
 export function BarChart({ values, step, sorted, status }: BarChartProps) {

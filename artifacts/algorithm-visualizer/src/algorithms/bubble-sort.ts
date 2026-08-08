@@ -1,6 +1,8 @@
 import type { VisualizationStep } from './types';
 
-export function generateBubbleSortSteps(values: number[]): VisualizationStep[] {
+export function generateBubbleSortSteps(
+  values: readonly number[],
+): VisualizationStep[] {
   const working = [...values];
   const steps: VisualizationStep[] = [];
 

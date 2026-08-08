@@ -1,9 +1,10 @@
-import { Pause, Play, RotateCcw, Shuffle, Zap } from 'lucide-react';
+import { Pause, Play, RotateCcw, Zap } from 'lucide-react';
+import type { PlaybackStatus } from '@/algorithms/types';
 
 interface ControlPanelProps {
   arraySize: number;
   speed: number;
-  status: 'ready' | 'running' | 'paused' | 'complete';
+  status: PlaybackStatus;
   onArraySizeChange: (value: number) => void;
   onSpeedChange: (value: number) => void;
   onStart: () => void;
