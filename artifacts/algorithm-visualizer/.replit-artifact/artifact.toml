@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Algorithm Visualizer"
+description = "A professional interactive learning tool for watching sorting algorithms execute step by step, beginning with Bubble Sort."
+version = "1.0.0"
+id = "artifacts/algorithm-visualizer"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23655
+
+[services.development]
+run = "pnpm --filter @workspace/algorithm-visualizer run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/algorithm-visualizer", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/algorithm-visualizer/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23655"
+BASE_PATH = "/"
