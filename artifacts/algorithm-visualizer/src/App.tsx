@@ -17,6 +17,8 @@ import { useVisualizationPlayback } from '@/hooks/use-visualization-playback';
 import MergeSortPage from '@/pages/merge-sort';
 import QuickSortPage from '@/pages/quick-sort';
 import HeapSortPage from '@/pages/heap-sort';
+import RaceModePage from '@/pages/race-mode';
+import PathfindingPage from '@/pages/pathfinding';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 
@@ -168,18 +170,40 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+
       <Route
         path="/merge-sort"
-        component={() => <MergeSortPage createArray={createArray} />}
+        component={() => (
+          <MergeSortPage createArray={createArray} />
+        )}
       />
+
       <Route
         path="/quick-sort"
-        component={() => <QuickSortPage createArray={createArray} />}
+        component={() => (
+          <QuickSortPage createArray={createArray} />
+        )}
       />
+
       <Route
         path="/heap-sort"
-        component={() => <HeapSortPage createArray={createArray} />}
+        component={() => (
+          <HeapSortPage createArray={createArray} />
+        )}
       />
+
+      <Route
+        path="/race"
+        component={() => (
+          <RaceModePage createArray={createArray} />
+        )}
+      />
+
+      <Route
+        path="/pathfinding"
+        component={PathfindingPage}
+      />
+
       <Route component={NotFound} />
     </Switch>
   );
