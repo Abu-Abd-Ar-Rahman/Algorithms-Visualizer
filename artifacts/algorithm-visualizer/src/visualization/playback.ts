@@ -9,6 +9,7 @@ export interface PlaybackState {
   status: PlaybackStatus;
   comparisons: number;
   swaps: number;
+  merges: number;
   sorted: Set<number>;
 }
 
@@ -21,6 +22,7 @@ export function createPlaybackState(
     status: 'ready',
     comparisons: 0,
     swaps: 0,
+    merges: 0,
     sorted: new Set<number>(),
   };
 }
@@ -31,6 +33,13 @@ export function applyVisualizationStep(
 ): PlaybackState {
   switch (step.type) {
     case 'compare':
+      return {
+        ...state,
+        stepIndex: state.stepIndex + 1,
+        comparisons: state.comparisons + 1,
+      };
+
+    case 'quickCompare':
       return {
         ...state,
         stepIndex: state.stepIndex + 1,
@@ -53,11 +62,54 @@ export function applyVisualizationStep(
       };
     }
 
+    case 'quickSwap': {
+      const [firstIndex, secondIndex] = step.indices;
+      const values = [...state.values];
+      [values[firstIndex], values[secondIndex]] = [
+        values[secondIndex],
+        values[firstIndex],
+      ];
+
+      return {
+        ...state,
+        values,
+        stepIndex: state.stepIndex + 1,
+        swaps: state.swaps + 1,
+      };
+    }
+
     case 'markSorted':
       return {
         ...state,
         stepIndex: state.stepIndex + 1,
         sorted: new Set(state.sorted).add(step.index),
+      };
+
+    case 'split':
+    case 'mergeStart':
+    case 'partitionStart':
+    case 'partitionComplete':
+      return {
+        ...state,
+        stepIndex: state.stepIndex + 1,
+      };
+
+    case 'mergeWrite': {
+      const values = [...state.values];
+      values[step.index] = step.value;
+
+      return {
+        ...state,
+        values,
+        stepIndex: state.stepIndex + 1,
+      };
+    }
+
+    case 'mergeComplete':
+      return {
+        ...state,
+        stepIndex: state.stepIndex + 1,
+        merges: state.merges + 1,
       };
 
     case 'complete':

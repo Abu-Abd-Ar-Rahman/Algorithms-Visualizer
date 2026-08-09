@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algorithm Visualizers — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F6F7F5;
+    --grid-line: #E1E5E2;
+    --ink: #1B2430;
+    --ink-soft: #5A6572;
+    --primary: #2D4159;
+    --accent: #D98E3F;
+    --live: #3A8B5C;
+    --planned: #8A8F94;
+    --border: #DDE1DE;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      var(--bg);
+    background-size: 28px 28px;
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--primary); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+
+  header.hero { padding: 64px 0 48px; border-bottom: 1px solid var(--border); }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  h1 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(26px, 7vw, 44px);
+    font-weight: 700;
+    margin: 10px 0 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .lede { font-size: 16px; color: var(--ink-soft); max-width: 46ch; margin-bottom: 8px; }
+
+  .byline { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); margin-bottom: 26px; }
+
+  main { padding: 36px 0 72px; }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 18px;
+  }
+
+  .project {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .project:first-child { padding-top: 0; }
+
+  .num { font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: var(--ink-soft); padding-top: 3px; }
+
+  .project-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 16.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 100px;
+    text-transform: uppercase;
+  }
+
+  .badge.live { background: rgba(58,139,92,0.12); color: var(--live); }
+  .badge.planned { background: rgba(138,143,148,0.14); color: var(--planned); }
+
+  .project-desc { color: var(--ink-soft); font-size: 14.5px; margin: 6px 0 10px; }
+
+  .project-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+  }
+
+  footer {
+    padding: 28px 0 60px;
+    border-top: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  footer a { color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Portfolio</div>
+    <h1>Watching Algorithms Think</h1>
+    <p class="lede">Eight small tools built to make sorting and pathfinding visible — one comparison, one swap, one cell at a time.</p>
+    <p class="byline"><!-- Replace with your name -->— ʿAbdullāh Abū ʿAbdu Ar-Raḥmān </p>
+  </header>
+
+  <main>
+    <div class="section-label">Build order — 01 through 08</div>
+
+    <div class="project">
+      <div class="num">01</div>
+      <div>
+        <div class="project-title">Bubble Sort <span class="badge live">Live</span></div>
+        <p class="project-desc">The foundational comparison sort — adjacent elements swap until the array settles into order.</p>
+        <a class="project-link" href="#"><!-- Replace with your Replit link -->View project →</a>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="num">02</div>
+      <div>
+        <div class="project-title">Merge Sort <span class="badge planned">Planned</span></div>
+        <p class="project-desc">Divide and conquer: split the array recursively, then merge sorted halves back together.</p>
+        <a class="project-link" href="#">View project →</a>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="num">03</div>
+      <div>
+        <div class="project-title">Quick Sort <span class="badge planned">Planned</span></div>
+        <p class="project-desc">Divide and conquer again, this time partitioning the array around a chosen pivot.</p>
+        <a class="project-link" href="#">View project →</a>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="num">04</div>
+      <div>
+        <div class="project-title">Heap Sort <span class="badge planned">Planned</span></div>
+        <p class="project-desc">Builds a heap from the array, then repeatedly extracts the largest remaining element.</p>
+        <a class="project-link" href="#">View project →</a>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="num">05</div>
+      <div>
+        <div class="project-title">Race Mode <span class="badge planned">Planned</span></div>
+        <p class="project-desc">Runs multiple sorting algorithms side by side on the same array to compare speed directly.</p>
+        <a class="project-link" href="#">View project →</a>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="num">06</div>
+      <div>
+        <div class="project-title">Dijkstra's Algorithm <span class="badge planned">Planned</span></div>
+        <p class="project-desc">A grid-based pathfinder that explores outward in every direction to guarantee the shortest route.</p>
+        <a class="project-link" href="#">View project →</a>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="num">07</div>
+      <div>
+        <div class="project-title">A* Search <span class="badge planned">Planned</span></div>
+        <p class="project-desc">Extends Dijkstra with a heuristic, reaching the same shortest path while exploring far fewer cells.</p>
+        <a class="project-link" href="#">View project →</a>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="num">08</div>
+      <div>
+        <div class="project-title">AI Code Review Tool <span class="badge planned">Planned</span></div>
+        <p class="project-desc">Pastes code through static checks and an AI review layer, surfacing bugs and style issues side by side.</p>
+        <a class="project-link" href="#">View project →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <a href="#">https://github.com/Abu-Abd-Ar-Rahman Github</a>
+    <a href="#"><!-- Replace with your resume link -->Resume</a>
+    <a href="#"> ammanshaikhabdullah@googlemail.com Contact</a>
+  </footer>
+</div>
+
+</body>
+</html>
