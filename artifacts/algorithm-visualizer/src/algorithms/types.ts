@@ -61,5 +61,28 @@ export type VisualizationStep =
       pivotIndex: number;
     }
   | {
+      type: 'heapifyStart';
+      heapSize: number;
+      rootIndex: number;
+      phase: 'build' | 'extract';
+    }
+  | {
+      type: 'heapCompare';
+      indices: IndexPair;
+      heapSize: number;
+      phase: 'build' | 'extract';
+    }
+  | {
+      type: 'heapSwap';
+      indices: IndexPair;
+      heapSize: number;
+      phase: 'build' | 'extract';
+    }
+  | {
+      type: 'heapExtract';
+      heapSize: number;
+      targetIndex: number;
+    }
+  | {
       type: 'complete';
     };

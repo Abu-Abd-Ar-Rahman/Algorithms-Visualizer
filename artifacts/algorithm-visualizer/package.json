@@ -8,7 +8,7 @@
     "build": "vite build --config vite.config.ts",
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "tsx --test src/algorithms/bubble-sort.test.ts src/algorithms/quick-sort.test.ts src/visualization/playback.test.ts"
+    "test": "tsx --test src/algorithms/bubble-sort.test.ts src/algorithms/heap-sort.test.ts src/algorithms/quick-sort.test.ts src/visualization/playback.test.ts"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.10.0",

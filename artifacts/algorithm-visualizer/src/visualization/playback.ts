@@ -10,6 +10,7 @@ export interface PlaybackState {
   comparisons: number;
   swaps: number;
   merges: number;
+  heapSize: number;
   sorted: Set<number>;
 }
 
@@ -23,6 +24,7 @@ export function createPlaybackState(
     comparisons: 0,
     swaps: 0,
     merges: 0,
+    heapSize: values.length,
     sorted: new Set<number>(),
   };
 }
@@ -44,6 +46,14 @@ export function applyVisualizationStep(
         ...state,
         stepIndex: state.stepIndex + 1,
         comparisons: state.comparisons + 1,
+      };
+
+    case 'heapCompare':
+      return {
+        ...state,
+        stepIndex: state.stepIndex + 1,
+        comparisons: state.comparisons + 1,
+        heapSize: step.heapSize,
       };
 
     case 'swap': {
@@ -78,6 +88,23 @@ export function applyVisualizationStep(
       };
     }
 
+    case 'heapSwap': {
+      const [firstIndex, secondIndex] = step.indices;
+      const values = [...state.values];
+      [values[firstIndex], values[secondIndex]] = [
+        values[secondIndex],
+        values[firstIndex],
+      ];
+
+      return {
+        ...state,
+        values,
+        stepIndex: state.stepIndex + 1,
+        swaps: state.swaps + 1,
+        heapSize: step.heapSize,
+      };
+    }
+
     case 'markSorted':
       return {
         ...state,
@@ -89,9 +116,15 @@ export function applyVisualizationStep(
     case 'mergeStart':
     case 'partitionStart':
     case 'partitionComplete':
+    case 'heapifyStart':
+    case 'heapExtract':
       return {
         ...state,
         stepIndex: state.stepIndex + 1,
+        heapSize:
+          step.type === 'heapifyStart' || step.type === 'heapExtract'
+            ? step.heapSize
+            : state.heapSize,
       };
 
     case 'mergeWrite': {
@@ -117,6 +150,7 @@ export function applyVisualizationStep(
         ...state,
         stepIndex: state.stepIndex + 1,
         status: 'complete',
+        heapSize: 0,
         sorted: new Set(
           state.values.map((_, index) => index),
         ),

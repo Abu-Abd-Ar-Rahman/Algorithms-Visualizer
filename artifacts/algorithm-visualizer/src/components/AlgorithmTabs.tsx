@@ -42,6 +42,17 @@ export function AlgorithmTabs() {
       >
         Quick Sort
       </Link>
+      <Link
+        href="/heap-sort"
+        className={`rounded-lg px-3 py-2 text-[10px] font-extrabold uppercase tracking-[.12em] transition ${
+          location === '/heap-sort'
+            ? 'bg-[hsl(var(--secondary))] text-[hsl(var(--card))]'
+            : 'text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]'
+        }`}
+        data-testid="tab-heap-sort"
+      >
+        Heap Sort
+      </Link>
     </nav>
   );
 }

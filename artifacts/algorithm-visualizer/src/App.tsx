@@ -16,6 +16,7 @@ import { MetricCard } from '@/components/MetricCard';
 import { useVisualizationPlayback } from '@/hooks/use-visualization-playback';
 import MergeSortPage from '@/pages/merge-sort';
 import QuickSortPage from '@/pages/quick-sort';
+import HeapSortPage from '@/pages/heap-sort';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 
@@ -174,6 +175,10 @@ function Router() {
       <Route
         path="/quick-sort"
         component={() => <QuickSortPage createArray={createArray} />}
+      />
+      <Route
+        path="/heap-sort"
+        component={() => <HeapSortPage createArray={createArray} />}
       />
       <Route component={NotFound} />
     </Switch>
