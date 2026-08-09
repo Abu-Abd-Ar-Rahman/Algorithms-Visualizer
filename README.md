@@ -4,7 +4,7 @@ An interactive web application for visualizing and comparing fundamental sorting
 
 ## Live Demo
 
-[Open the live application](YOUR_LIVE_DEMO_URL)
+[Open the live application](https://replit.com/@AbuAbdArRahman/Algorithms-Visualizer?s=app)
 
 ## Features
 
