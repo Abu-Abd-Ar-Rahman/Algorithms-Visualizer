@@ -32,11 +32,14 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
+          cache-dependency-path: artifacts/algorithm-visualizer/pnpm-lock.yaml
 
       - name: Install dependencies
+        working-directory: artifacts/algorithm-visualizer
         run: pnpm install --frozen-lockfile
 
       - name: Build
+        working-directory: artifacts/algorithm-visualizer
         run: pnpm run build
 
       - name: Setup Pages
@@ -45,7 +48,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: artifacts/algorithm-visualizer/dist
 
   deploy:
     environment:
