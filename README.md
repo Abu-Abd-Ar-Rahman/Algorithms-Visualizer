@@ -88,3 +88,6 @@ This project provides an interactive way to understand how common sorting and pa
 ## Author
 
 Abu Abd Ar-Rahman, ʿAbdullāh 
+
+## Contact
+ammanshaikhabdullah@googlemail.com 
