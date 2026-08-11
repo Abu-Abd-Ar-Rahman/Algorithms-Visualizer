@@ -4,7 +4,7 @@ An interactive web application for visualizing and comparing fundamental sorting
 
 ## Live Demo
 
-[Open the live application](https://replit.com/@AbuAbdArRahman/Algorithms-Visualizer?s=app)
+[Open the live application](https://algorithms-visualizer-athari-labs.netlify.app)
 
 ## Features
 
