@@ -2,7 +2,7 @@
 
 An interactive web application for visualizing and comparing fundamental sorting and pathfinding algorithms.
 
-## Live Demo
+## Live Demonstration 
 
 [Open the live application](https://algorithms-visualizer-athari-labs.netlify.app)
 
